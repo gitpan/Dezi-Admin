@@ -27,6 +27,8 @@ requires:
   SWISH::Prog: 0.69
   SWISH::Prog::Lucy: 0.14
   Search::OpenSearch::Engine::Lucy: 0.16
+  Search::QueryParser::SQL: 0
+  Sort::SQL: 0
   Test::More: 0
   perl: 5.8.9
 resources:
@@ -34,4 +36,4 @@ resources:
   homepage: https://github.com/karpet/dezi-admin
   license: http://opensource.org/licenses/gpl-license.php
   repository: http://github.com/karpet/dezi-admin
-version: 0.002
+version: 0.003
