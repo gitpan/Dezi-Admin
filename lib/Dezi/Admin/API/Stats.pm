@@ -15,7 +15,7 @@ use Plack::Middleware::REST::Util;
 use Dezi::Admin::Utils;
 use Dezi::Admin::API::Response;
 
-our $VERSION = '0.004';
+our $VERSION = '0.005';
 
 our @FIELDS = (
     {   name => 'id',
@@ -208,7 +208,7 @@ sub call {
     }
     else {
         my $api_resp = $self->$method($req);
-        $resp->body($api_resp);
+        $resp->body("$api_resp");
     }
 
     $resp->status(200) unless $resp->status;

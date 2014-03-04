@@ -6,7 +6,7 @@ use Plack::Builder;
 use Plack::App::File;
 use Dezi::Admin::Config;
 
-our $VERSION = '0.004';
+our $VERSION = '0.005';
 
 =head1 NAME
 
@@ -43,7 +43,7 @@ web interface to a Dezi server.
 
 Returns a Plack-ready application via Plack::Builder.
 
-I<args> are passed directly to L<Dez::Admin::Config>.
+I<args> are passed directly to L<Dezi::Admin::Config> new().
 
 =cut
 
