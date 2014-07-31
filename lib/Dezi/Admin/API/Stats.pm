@@ -14,8 +14,9 @@ use JSON;
 use Plack::Middleware::REST::Util;
 use Dezi::Admin::Utils;
 use Dezi::Admin::API::Response;
+use Try::Tiny;
 
-our $VERSION = '0.005';
+our $VERSION = '0.006';
 
 our @FIELDS = (
     {   name => 'id',
@@ -118,10 +119,15 @@ sub get_terms {
             $sql{args} ? $sth->execute( @{ $sql{args} } ) : $sth->execute();
             while ( my $row = $sth->fetchrow_hashref ) {
                 my $q = $row->{q} or next;
-                my $query;
-                eval { $query = $query_parser->parse($q); };
-                if ( !$@ and $query ) {
-
+                my $err;
+                my $query = try {
+                    $query_parser->parse($q);
+                }
+                catch {
+                    $err = $_;
+                    return;
+                };
+                if ( !$err and $query ) {
                     $query->walk(
                         sub {
                             my ( $clause, $dialect, $code, $prefix ) = @_;
@@ -129,17 +135,20 @@ sub get_terms {
                                 $clause->value->walk($code);
                             }
                             else {
-                                $all_terms{ $clause->value }->{count}++;
-                                $all_terms{ $clause->value }->{recent}
+                                my $value
+                                    = ref( $clause->value )
+                                    ? sprintf( '(%s..%s)',
+                                    @{ $clause->value } )
+                                    : $clause->value;
+                                $all_terms{$value}->{count}++;
+                                $all_terms{$value}->{recent}
                                     ||= $row->{tstamp};
-                                $all_terms{ $clause->value }->{recent}
-                                    = $row->{tstamp}
+                                $all_terms{$value}->{recent} = $row->{tstamp}
                                     if $row->{tstamp}
-                                    > $all_terms{ $clause->value }->{recent};
+                                    > $all_terms{$value}->{recent};
                             }
                         }
                     );
-
                 }
             }
         }

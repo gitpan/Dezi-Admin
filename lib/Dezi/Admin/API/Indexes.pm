@@ -13,7 +13,7 @@ use Plack::Middleware::REST::Util;
 use Dezi::Admin::Utils;
 use Dezi::Admin::API::Response;
 
-our $VERSION = '0.005';
+our $VERSION = '0.006';
 
 our @FIELDS = ( 'path', 'config', );
 
@@ -32,7 +32,7 @@ sub get_list {
     for my $idx ( @{ $self->engine->searcher->invindex } ) {
         my $res = {
             path   => "$idx",
-            config => $idx->meta->data,
+            config => $idx->get_header->data,
         };
         push @$list, $res;
     }
